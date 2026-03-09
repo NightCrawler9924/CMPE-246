@@ -5,6 +5,9 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Thermal Control Dashboard</title>
   <link rel="stylesheet" href="style.css" />
+
+  <!-- Chart.js library -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 <body>
   <h1>Thermal Control Dashboard</h1>
@@ -15,6 +18,11 @@
     <p>Setpoint: <span id="setpoint">--</span> °C</p>
     <p>Mode: <span id="mode">--</span></p>
     <p>Trip Status: <span id="trip">--</span></p>
+  </div>
+
+  <div class="card">
+    <h2>Live Temperature Graph</h2>
+    <canvas id="tempChart"></canvas>
   </div>
 
   <div class="card">
