@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Thermal Control Dashboard</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <h1>Thermal Control Dashboard</h1>
+
+  <div class="card">
+    <h2>System State</h2>
+    <p>Temperature: <span id="temperature">--</span> °C</p>
+    <p>Setpoint: <span id="setpoint">--</span> °C</p>
+    <p>Mode: <span id="mode">--</span></p>
+    <p>Trip Status: <span id="trip">--</span></p>
+  </div>
+
+  <div class="card">
+    <h2>Update Setpoint</h2>
+    <input type="number" id="setpointInput" placeholder="Enter setpoint" />
+    <button onclick="updateSetpoint()">Update Setpoint</button>
+  </div>
+
+  <div class="card">
+    <h2>Change Mode</h2>
+    <select id="modeSelect">
+      <option value="OFF">OFF</option>
+      <option value="MANUAL">MANUAL</option>
+      <option value="AUTO">AUTO</option>
+    </select>
+    <button onclick="updateMode()">Update Mode</button>
+  </div>
+
+  <div class="card">
+    <h2>Status Message</h2>
+    <p id="message">Ready.</p>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>
