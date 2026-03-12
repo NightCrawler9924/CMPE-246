@@ -1,0 +1,33 @@
+body { 
+  font-family: Arial, sans-serif; 
+  margin: 24px; 
+  background: #f7f7f7; 
+}
+
+.card { 
+  background: white; 
+  border-radius: 12px; 
+  padding: 16px; 
+  margin-bottom: 16px; 
+  box-shadow: 0 2px 8px rgba(0,0,0,0.08); 
+}
+
+.row { 
+  display: flex; 
+  gap: 16px; 
+  flex-wrap: wrap; 
+}
+
+.small { 
+  min-width: 180px; 
+}
+
+button, select, input { 
+  padding: 8px; 
+  margin-top: 8px; 
+}
+
+.trip { 
+  color: #b00020; 
+  font-weight: bold; 
+}
