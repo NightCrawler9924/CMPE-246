@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>CMPE 246 Dashboard Prototype</title>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <style>
+    body { font-family: Arial, sans-serif; margin: 24px; background: #f7f7f7; }
+    .card { background: white; border-radius: 12px; padding: 16px; margin-bottom: 16px; box-shadow: 0 2px 8px rgba(0,0,0,0.08); }
+    .row { display: flex; gap: 16px; flex-wrap: wrap; }
+    .small { min-width: 180px; }
+    button, select, input { padding: 8px; margin-top: 8px; }
+    .trip { color: #b00020; font-weight: bold; }
+  </style>
+</head>
+<body>
+  <h1>CMPE 246 Thermal Dashboard</h1>
+
+  <div class="row">
+    <div class="card small"><h3>Temperature</h3><div id="temperature">--</div></div>
+    <div class="card small"><h3>Setpoint</h3><div id="setpoint">--</div></div>
+    <div class="card small"><h3>Mode</h3><div id="mode">--</div></div>
+    <div class="card small"><h3>Trip</h3><div id="trip">--</div></div>
+  </div>
+
+  <div class="card">
+    <h3>Controls</h3>
+    <label>New Setpoint:</label>
+    <input id="newSetpoint" type="number" min="20" max="80" step="0.1" />
+    <button onclick="updateSetpoint()">Apply Setpoint</button>
+    <br><br>
+    <label>Mode:</label>
+    <select id="newMode">
+      <option>OFF</option>
+      <option>MANUAL</option>
+      <option>AUTO</option>
+    </select>
+    <button onclick="updateMode()">Apply Mode</button>
+    <button onclick="resetTrip()">Reset Trip</button>
+    <p id="message"></p>
+  </div>
+
+  <div class="card">
+    <h3>Live Temperature Graph</h3>
+    <canvas id="tempChart"></canvas>
+  </div>
+
+  <script>
+    const API_BASE = 'http://127.0.0.1:8000';
+    const labels = [];
+    const dataPoints = [];
+
+    const ctx = document.getElementById('tempChart').getContext('2d');
+    const chart = new Chart(ctx, {
+      type: 'line',
+      data: {
+        labels: labels,
+        datasets: [{ label: 'Temperature (°C)', data: dataPoints, tension: 0.2 }]
+      },
+      options: {
+        responsive: true,
+        scales: { y: { beginAtZero: false } }
+      }
+    });
+
+    async function fetchState() {
+      const res = await fetch(`${API_BASE}/state`);
+      const state = await res.json();
+
+      document.getElementById('temperature').textContent = `${state.temperature.toFixed(1)} °C`;
+      document.getElementById('setpoint').textContent = `${state.setpoint.toFixed(1)} °C`;
+      document.getElementById('mode').textContent = state.mode;
+      document.getElementById('trip').innerHTML = state.trip
+        ? `<span class="trip">YES - ${state.trip_reason}</span>`
+        : 'NO';
+
+      const now = new Date().toLocaleTimeString();
+      labels.push(now);
+      dataPoints.push(state.temperature);
+      if (labels.length > 20) {
+        labels.shift();
+        dataPoints.shift();
+      }
+      chart.update();
+    }
+
+    async function updateSetpoint() {
+      const value = parseFloat(document.getElementById('newSetpoint').value);
+      const res = await fetch(`${API_BASE}/setpoint`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ setpoint: value })
+      });
+      const result = await res.json();
+      document.getElementById('message').textContent = result.message || result.detail;
+    }
+
+    async function updateMode() {
+      const value = document.getElementById('newMode').value;
+      const res = await fetch(`${API_BASE}/mode`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ mode: value })
+      });
+      const result = await res.json();
+      document.getElementById('message').textContent = result.message || result.detail;
+    }
+
+    async function resetTrip() {
+      const res = await fetch(`${API_BASE}/reset_trip`, { method: 'POST' });
+      const result = await res.json();
+      document.getElementById('message').textContent = result.message || result.detail;
+    }
+
+    fetchState();
+    setInterval(fetchState, 1000);
+  </script>
+</body>
+</html>
