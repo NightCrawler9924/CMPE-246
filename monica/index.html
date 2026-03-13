@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>CMPE 246 Dashboard</title>
+
+  <link rel="stylesheet" href="css/style.css" />
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+
+<body>
+  <h1>CMPE 246 Thermal Dashboard</h1>
+
+  <div class="row">
+    <div class="card small"><h3>Temperature</h3><div id="temperature">--</div></div>
+    <div class="card small"><h3>Setpoint</h3><div id="setpoint">--</div></div>
+    <div class="card small"><h3>Mode</h3><div id="mode">--</div></div>
+    <div class="card small"><h3>Trip</h3><div id="trip">--</div></div>
+  </div>
+
+  <div class="card">
+    <h3>Controls</h3>
+    <label>New Setpoint:</label>
+    <input id="newSetpoint" type="number" min="20" max="80" step="0.1" />
+    <button id="btnSetpoint">Apply Setpoint</button>
+
+    <br><br>
+
+    <label>Mode:</label>
+    <select id="newMode">
+      <option>OFF</option>
+      <option>MANUAL</option>
+      <option>AUTO</option>
+    </select>
+    <button id="btnMode">Apply Mode</button>
+    <button id="btnResetTrip">Reset Trip</button>
+
+    <p id="message"></p>
+  </div>
+
+  <div class="card">
+    <h3>Live Temperature Graph</h3>
+    <canvas id="tempChart"></canvas>
+  </div>
+
+  <!-- JS modules -->
+  <script src="js/api.js"></script>
+  <script src="js/graph.js"></script>
+  <script src="js/state.js"></script>
+  <script src="js/controls.js"></script>
+  <script src="js/init.js"></script>
+</body>
+</html>
