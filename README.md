@@ -20,3 +20,4 @@ This project is a prototype thermal control dashboard and backend.
 
 ## Run the Frontend
 Open `frontend/index.html` in a browser.
+
