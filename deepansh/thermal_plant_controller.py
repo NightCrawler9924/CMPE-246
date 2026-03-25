@@ -26,8 +26,8 @@ import RPi.GPIO as GPIO
 # CONFIGURATION  (edit these values)
 # ─────────────────────────────────────────
 RELAY_PIN      = 17       # GPIO pin connected to relay module
-TARGET_LOW     = 48.0     # Turn heater ON  below this °C
-TARGET_HIGH    = 50.0     # Turn heater OFF above this °C
+TARGET_LOW     = 58.0     # Turn heater ON  below this °C
+TARGET_HIGH    = 60.0     # Turn heater OFF above this °C
 MAX_SAFE_TEMP  = 70.0     # Emergency cutoff °C
 LOOP_DELAY     = 1.0      # Seconds between readings
 
