@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>ThermoGuard Reactor Safety Dashboard</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Playfair+Display:wght@600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="style_updated.css" />
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+  <header class="hero" id="top">
+    <div class="hero-inner">
+      <p class="eyebrow">ThermoGuard</p>
+      <h1>Reactor Safety Dashboard</h1>
+      <p class="hero-subtitle">Raspberry Pi-Centric Autonomous Reactor Cooling Safety System</p>
+
+      <div class="hero-actions">
+        <a class="hero-button" href="#team">About Us</a>
+        <a class="hero-button hero-button-secondary" href="YOUR_YOUTUBE_LINK_HERE" target="_blank" rel="noopener noreferrer">Our Project</a>
+      </div>
+    </div>
+  </header>
+
+  <main class="page-shell">
+    <section class="dashboard-grid">
+      <div class="panel panel-wide">
+        <div class="panel-header">
+          <div>
+            <p class="section-label">Monitoring</p>
+            <h2>System State</h2>
+          </div>
+          <span class="status-pill" id="systemHealthBadge">System Ready</span>
+        </div>
+
+        <div class="state-grid">
+          <article class="state-card">
+            <span class="state-label">Temperature</span>
+            <p class="state-value"><span id="temperature">--</span><span class="unit"> °C</span></p>
+          </article>
+
+          <article class="state-card">
+            <span class="state-label">Setpoint</span>
+            <p class="state-value"><span id="setpoint">--</span><span class="unit"> °C</span></p>
+          </article>
+
+          <article class="state-card">
+            <span class="state-label">Mode</span>
+            <p class="state-value state-text" id="mode">--</p>
+          </article>
+
+          <article class="state-card">
+            <span class="state-label">Trip Status</span>
+            <p class="state-value state-text" id="trip">--</p>
+          </article>
+        </div>
+      </div>
+
+      <div class="panel panel-side">
+        <div class="panel-header compact-header">
+          <div>
+            <p class="section-label">Quick Overview</p>
+            <h2>Safety Summary</h2>
+          </div>
+        </div>
+
+        <div class="summary-list">
+          <div class="summary-row">
+            <span>Cooling State</span>
+            <strong id="coolingState">Standby</strong>
+          </div>
+          <div class="summary-row">
+            <span>Last Command</span>
+            <strong id="lastCommand">None</strong>
+          </div>
+          <div class="summary-row">
+            <span>Data Refresh</span>
+            <strong id="dataRefresh">Live</strong>
+          </div>
+        </div>
+      </div>
+
+      <div class="panel chart-panel panel-wide">
+        <div class="panel-header">
+          <div>
+            <p class="section-label">Visualization</p>
+            <h2>Live Temperature Graph</h2>
+          </div>
+        </div>
+        <div class="chart-wrap">
+          <canvas id="tempChart"></canvas>
+        </div>
+      </div>
+
+      <div class="panel control-panel">
+        <div class="panel-header compact-header">
+          <div>
+            <p class="section-label">Control</p>
+            <h2>Update Setpoint</h2>
+          </div>
+        </div>
+
+        <div class="control-group">
+          <label for="setpointInput">Target Temperature (°C)</label>
+          <div class="control-inline">
+            <input type="number" id="setpointInput" placeholder="Enter setpoint" />
+            <button class="action-button" id="setpointButton" onclick="updateSetpoint()">Update Setpoint</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="panel control-panel">
+        <div class="panel-header compact-header">
+          <div>
+            <p class="section-label">Control</p>
+            <h2>Change Mode</h2>
+          </div>
+        </div>
+
+        <div class="control-group">
+          <label for="modeSelect">System Mode</label>
+          <div class="control-inline">
+            <select id="modeSelect">
+              <option value="OFF">OFF</option>
+              <option value="MANUAL">MANUAL</option>
+              <option value="AUTO">AUTO</option>
+            </select>
+            <button class="action-button" id="modeButton" onclick="updateMode()">Update Mode</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="panel control-panel">
+        <div class="panel-header compact-header">
+          <div>
+            <p class="section-label">Protection</p>
+            <h2>Reset Trip</h2>
+          </div>
+        </div>
+
+        <div class="control-group">
+          <p class="helper-text">Use this control after the unsafe condition has been reviewed and cleared.</p>
+          <button class="action-button action-button-danger" id="resetTripButton" onclick="resetTrip()">Reset Trip</button>
+        </div>
+      </div>
+
+      <div class="panel panel-wide">
+        <div class="panel-header compact-header">
+          <div>
+            <p class="section-label">Messaging</p>
+            <h2>Status Message</h2>
+          </div>
+        </div>
+
+        <div class="message-box" id="messageBox">
+          <p id="message">Ready.</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="team-section" id="team">
+      <div class="team-header">
+        <p class="section-label">About Us</p>
+        <h2>Meet the team</h2>
+      </div>
+
+      <div class="team-table-wrap">
+        <table class="team-table">
+          <thead>
+            <tr>
+              <th>Name</th>
+              <th>Title</th>
+              <th>Contact</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Deepansh Sabharwal</td>
+              <td>Systems Lead</td>
+              <td><a href="mailto:deepanshsabh.60@gmail.com">deepanshsabh.60@gmail.com</a></td>
+            </tr>
+            <tr>
+              <td>Dhruv Nikalwala</td>
+              <td>Safety Lead</td>
+              <td><a href="mailto:dhruv27nickel@gmail.com">dhruv27nickel@gmail.com</a></td>
+            </tr>
+            <tr>
+              <td>Emilie Labonte</td>
+              <td>Backend Lead</td>
+              <td><a href="mailto:emilie.g.labonte@gmail.com">emilie.g.labonte@gmail.com</a></td>
+            </tr>
+            <tr>
+              <td>Jaiman Mistry</td>
+              <td>Hardware Lead</td>
+              <td><a href="mailto:jaimanmistry26@gmail.com">jaimanmistry26@gmail.com</a></td>
+            </tr>
+            <tr>
+              <td>Hasan Mohammad</td>
+              <td>Hardware Lead</td>
+              <td><a href="mailto:hasanbm.stu@gmail.com">hasanbm.stu@gmail.com</a></td>
+            </tr>
+            <tr>
+              <td>Monica Nguyen</td>
+              <td>Frontend Lead</td>
+              <td><a href="mailto:nguyenle.nhatthuyen@gmail.com">nguyenle.nhatthuyen@gmail.com</a></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+  </main>
+
+  <script src="script_updated.js"></script>
+</body>
+</html>
