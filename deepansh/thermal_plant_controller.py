@@ -372,7 +372,7 @@ if __name__ == "__main__":
             print(f"Safety cutoff: {MAX_SAFE_TEMP} C")
             print("Starting control loop... (Ctrl+C to stop)\n")
             control_loop(sensor_file, ser)
-
+          
     except FileNotFoundError as e:
         print(f"\nSETUP ERROR: {e}")
 
