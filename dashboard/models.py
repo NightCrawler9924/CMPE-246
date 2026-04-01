@@ -9,6 +9,13 @@ class ControlState(BaseModel):
     trip_status: bool
     heater_on: bool
     pump_on: bool
+    relay_on: bool = False
+    buzzer_on: bool = False
+    led_heating: bool = False
+    led_holding: bool = False
+    led_fault: bool = False
+    led_ok: bool = False
+    failure_mode: str = "NONE"
 
 
 class SetpointUpdate(BaseModel):

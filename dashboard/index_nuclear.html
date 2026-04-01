@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>ThermoNuke Reactor Safety Dashboard</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Playfair+Display:wght@600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="style_nuclear.css" />
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+  <div class="scanlines"></div>
+  <div class="hazard-tape top">RADIATION CONTROL ZONE - AUTHORIZED PERSONNEL ONLY - RADIATION CONTROL ZONE</div>
+  <div class="hazard-tape bottom">REACTOR SAFETY OVERRIDE - INCIDENT RESPONSE PROTOCOL ACTIVE</div>
+
+  <header class="hero hero-nuclear" id="top">
+    <div class="hero-inner hero-inner-nuclear">
+      <p class="eyebrow eyebrow-nuclear">THERMONUKE</p>
+      <h1>Reactor Safety Terminal</h1>
+      <p class="hero-subtitle hero-subtitle-nuclear">Live Pi Control Console + Safety Interlocks</p>
+
+      <div class="hero-actions hero-actions-nuclear">
+        <a class="hero-button" href="#controls">Controls</a>
+        <a class="hero-button hero-button-secondary" href="#status">Status</a>
+      </div>
+    </div>
+  </header>
+
+  <main class="page-shell">
+    <section class="dashboard-grid">
+      <div class="panel panel-wide panel-nuclear">
+        <div class="panel-header">
+          <div>
+            <p class="section-label section-label-nuclear">Monitoring</p>
+            <h2>Status + Thresholds</h2>
+          </div>
+          <span class="status-pill status-pill-nuclear" id="systemHealthBadge">System Ready</span>
+        </div>
+
+        <div class="state-grid">
+          <article class="state-card state-card-nuclear">
+            <span class="state-label state-label-nuclear">Temperature</span>
+            <p class="state-value"><span id="temperature">--</span><span class="unit"> °C</span></p>
+          </article>
+
+          <article class="state-card state-card-nuclear">
+            <span class="state-label state-label-nuclear">Setpoint</span>
+            <p class="state-value"><span id="setpoint">--</span><span class="unit"> °C</span></p>
+          </article>
+
+          <article class="state-card state-card-nuclear">
+            <span class="state-label state-label-nuclear">Mode</span>
+            <p class="state-value state-text" id="mode">--</p>
+          </article>
+
+          <article class="state-card state-card-nuclear">
+            <span class="state-label state-label-nuclear">Trip Status</span>
+            <p class="state-value state-text" id="trip">--</p>
+          </article>
+        </div>
+      </div>
+
+      <div class="panel panel-side panel-nuclear" id="status">
+        <div class="panel-header compact-header">
+          <div>
+            <p class="section-label section-label-nuclear">Hardware</p>
+            <h2>Interlocks</h2>
+          </div>
+        </div>
+
+        <div class="summary-list">
+          <div class="summary-row summary-row-nuclear">
+            <span>Relay</span>
+            <strong id="relayState" class="glow-pill">--</strong>
+          </div>
+          <div class="summary-row summary-row-nuclear">
+            <span>Buzzer</span>
+            <strong id="buzzerState" class="glow-pill">--</strong>
+          </div>
+          <div class="summary-row summary-row-nuclear">
+            <span>LED Heating</span>
+            <strong id="ledHeatingState" class="glow-pill">--</strong>
+          </div>
+          <div class="summary-row summary-row-nuclear">
+            <span>LED Holding</span>
+            <strong id="ledHoldingState" class="glow-pill">--</strong>
+          </div>
+          <div class="summary-row summary-row-nuclear">
+            <span>LED Fault</span>
+            <strong id="ledFaultState" class="glow-pill">--</strong>
+          </div>
+          <div class="summary-row summary-row-nuclear">
+            <span>LED OK</span>
+            <strong id="ledOkState" class="glow-pill">--</strong>
+          </div>
+          <div class="summary-row summary-row-nuclear">
+            <span>Failure Mode</span>
+            <strong id="failureModeState" class="glow-pill">--</strong>
+          </div>
+        </div>
+      </div>
+
+      <div class="panel chart-panel panel-wide panel-nuclear">
+        <div class="panel-header">
+          <div>
+            <p class="section-label section-label-nuclear">Visualization</p>
+            <h2>Thermal Trace</h2>
+          </div>
+        </div>
+        <div class="chart-wrap chart-wrap-nuclear">
+          <canvas id="tempChart"></canvas>
+        </div>
+      </div>
+
+      <div class="panel control-panel panel-nuclear" id="controls">
+        <div class="panel-header compact-header">
+          <div>
+            <p class="section-label section-label-nuclear">Control</p>
+            <h2>Update Setpoint</h2>
+          </div>
+        </div>
+
+        <div class="control-group">
+          <label for="setpointInput">Target Temperature (°C)</label>
+          <div class="control-inline">
+            <input type="number" id="setpointInput" placeholder="Enter setpoint" />
+            <button class="action-button action-button-nuclear" id="setpointButton" onclick="updateSetpoint()">Update Setpoint</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="panel control-panel panel-nuclear">
+        <div class="panel-header compact-header">
+          <div>
+            <p class="section-label section-label-nuclear">Control</p>
+            <h2>Change Mode</h2>
+          </div>
+        </div>
+
+        <div class="control-group">
+          <label for="modeSelect">System Mode</label>
+          <div class="control-inline">
+            <select id="modeSelect">
+              <option value="OFF">OFF</option>
+              <option value="MANUAL">MANUAL</option>
+              <option value="AUTO">AUTO</option>
+            </select>
+            <button class="action-button action-button-nuclear" id="modeButton" onclick="updateMode()">Update Mode</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="panel control-panel panel-nuclear">
+        <div class="panel-header compact-header">
+          <div>
+            <p class="section-label section-label-nuclear">Protection</p>
+            <h2>Reset Trip</h2>
+          </div>
+        </div>
+
+        <div class="control-group">
+          <p class="helper-text helper-text-nuclear">Only after the unsafe condition has been reviewed and cleared.</p>
+          <button class="action-button action-button-danger action-button-danger-nuclear" id="resetTripButton" onclick="resetTrip()">Reset Trip</button>
+          <button class="action-button action-button-danger action-button-danger-nuclear demo-button" onclick="demoRedScreen()">
+            Demo Red Screen
+          </button>
+        </div>
+      </div>
+
+      <div class="panel panel-wide panel-nuclear">
+        <div class="panel-header compact-header">
+          <div>
+            <p class="section-label section-label-nuclear">Messaging</p>
+            <h2>Status Message</h2>
+          </div>
+        </div>
+
+        <div class="message-box message-box-nuclear" id="messageBox">
+          <p id="message">Ready.</p>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <div class="failure-overlay failure-overlay-nuclear" id="failureOverlay" aria-live="assertive" aria-hidden="true">
+    <div class="failure-overlay-inner">
+      <p class="failure-label failure-label-nuclear">CRITICAL SAFETY EVENT</p>
+      <h2>RED SCREEN</h2>
+      <p id="failureOverlayText">Emergency shutdown active. Hardware intervention required.</p>
+    </div>
+  </div>
+
+  <script src="script_updated.js"></script>
+</body>
+</html>

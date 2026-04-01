@@ -62,22 +62,38 @@
         <div class="panel-header compact-header">
           <div>
             <p class="section-label">Quick Overview</p>
-            <h2>Safety Summary</h2>
+            <h2>Hardware Summary</h2>
           </div>
         </div>
 
         <div class="summary-list">
           <div class="summary-row">
-            <span>Cooling State</span>
-            <strong id="coolingState">Standby</strong>
+            <span>Relay</span>
+            <strong id="relayState">--</strong>
           </div>
           <div class="summary-row">
-            <span>Last Command</span>
-            <strong id="lastCommand">None</strong>
+            <span>Buzzer</span>
+            <strong id="buzzerState">--</strong>
           </div>
           <div class="summary-row">
-            <span>Data Refresh</span>
-            <strong id="dataRefresh">Live</strong>
+            <span>LED Heating</span>
+            <strong id="ledHeatingState">--</strong>
+          </div>
+          <div class="summary-row">
+            <span>LED Holding</span>
+            <strong id="ledHoldingState">--</strong>
+          </div>
+          <div class="summary-row">
+            <span>LED Fault</span>
+            <strong id="ledFaultState">--</strong>
+          </div>
+          <div class="summary-row">
+            <span>LED OK</span>
+            <strong id="ledOkState">--</strong>
+          </div>
+          <div class="summary-row">
+            <span>Failure Mode</span>
+            <strong id="failureModeState">--</strong>
           </div>
         </div>
       </div>
@@ -211,6 +227,14 @@
       </div>
     </section>
   </main>
+
+  <div class="failure-overlay" id="failureOverlay" aria-live="assertive" aria-hidden="true">
+    <div class="failure-overlay-inner">
+      <p class="failure-label">Critical Safety Event</p>
+      <h2>System Failure</h2>
+      <p id="failureOverlayText">Emergency shutdown active. Hardware intervention required.</p>
+    </div>
+  </div>
 
   <script src="script_updated.js"></script>
 </body>

@@ -5,4 +5,11 @@ state = {
     "trip_status": False,
     "heater_on": False,
     "pump_on": True,
+    "relay_on": False,
+    "buzzer_on": False,
+    "led_heating": False,
+    "led_holding": False,
+    "led_fault": False,
+    "led_ok": True,
+    "failure_mode": "NONE",
 }

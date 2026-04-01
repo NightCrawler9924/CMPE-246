@@ -56,9 +56,19 @@ async function fetchState() {
 
     const tripText = data.trip_status ? "TRIPPED" : "OK";
     updateText("trip", tripText);
+    updateText("relayState", data.relay_on ? "ON" : "OFF");
+    updateText("buzzerState", data.buzzer_on ? "ON" : "OFF");
+    updateText("ledHeatingState", data.led_heating ? "ON" : "OFF");
+    updateText("ledHoldingState", data.led_holding ? "ON" : "OFF");
+    updateText("ledFaultState", data.led_fault ? "ON" : "OFF");
+    updateText("ledOkState", data.led_ok ? "ON" : "OFF");
+    updateText("failureModeState", data.failure_mode || "NONE");
 
     // Update safety message
     updateSafetyStatus(data);
+    updateHealthBadge(data);
+    updateFailureOverlay(data);
+    updateRuntimeTheme(data);
 
     // Update graph
     updateTemperatureChart(data.current_temperature);
@@ -189,8 +199,12 @@ function updateSafetyStatus(data) {
   if (!msg) return;
 
   const diff = data.current_temperature - data.setpoint;
+  const failureMode = normalizeFailureMode(data.failure_mode);
+  const isHardFailure = isFailureModeCritical(failureMode);
 
-  if (data.trip_status) {
+  if (isHardFailure) {
+    msg.textContent = `🚨 CRITICAL FAILURE: ${failureMode}. Manual intervention required.`;
+  } else if (data.trip_status) {
     msg.textContent = "🚨 UNSAFE: System TRIPPED!";
   } else if (diff > 0.5) {
     msg.textContent = "⚠️ WARNING: Temperature above setpoint.";
@@ -200,6 +214,72 @@ function updateSafetyStatus(data) {
     msg.textContent = "✅ SAFE: System operating normally.";
   }
 }
+
+function normalizeFailureMode(mode) {
+  if (mode === null || mode === undefined) return "NONE";
+  return String(mode).trim().toUpperCase();
+}
+
+function isFailureModeCritical(failureMode) {
+  const criticalModes = new Set(["COMPLETE_FAILURE", "FULL_FAILURE", "FAILURE", "EMERGENCY", "SHUTDOWN"]);
+  return criticalModes.has(failureMode);
+}
+
+function updateHealthBadge(data) {
+  const badge = document.getElementById("systemHealthBadge");
+  if (!badge) return;
+
+  const failureMode = normalizeFailureMode(data.failure_mode);
+  const isHardFailure = isFailureModeCritical(failureMode);
+
+  if (isHardFailure) {
+    badge.textContent = "Complete Failure";
+  } else if (data.trip_status) {
+    badge.textContent = "Tripped";
+  } else {
+    badge.textContent = "System Ready";
+  }
+}
+
+function updateFailureOverlay(data) {
+  const overlay = document.getElementById("failureOverlay");
+  const overlayText = document.getElementById("failureOverlayText");
+  if (!overlay || !overlayText) return;
+
+  const failureMode = normalizeFailureMode(data.failure_mode);
+  const showOverlay = isFailureModeCritical(failureMode);
+
+  if (showOverlay) {
+    overlay.classList.add("active");
+    overlay.setAttribute("aria-hidden", "false");
+    overlayText.textContent = `Failure mode: ${failureMode}. Triggering emergency response.`;
+  } else {
+    overlay.classList.remove("active");
+    overlay.setAttribute("aria-hidden", "true");
+  }
+}
+
+function updateRuntimeTheme(data) {
+  const failureMode = normalizeFailureMode(data.failure_mode);
+  const isHardFailure = isFailureModeCritical(failureMode);
+  document.body.classList.toggle("state-critical", isHardFailure);
+}
+
+function demoRedScreen() {
+  const overlay = document.getElementById("failureOverlay");
+  const overlayText = document.getElementById("failureOverlayText");
+  if (!overlay || !overlayText) return;
+
+  overlay.classList.add("active");
+  overlay.setAttribute("aria-hidden", "false");
+  overlayText.textContent = "DEMO MODE: Complete failure visualization preview.";
+
+  setTimeout(() => {
+    overlay.classList.remove("active");
+    overlay.setAttribute("aria-hidden", "true");
+  }, 6000);
+}
+
 // ==============================
 // AUTO REFRESH
 // ==============================
