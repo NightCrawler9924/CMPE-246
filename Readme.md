@@ -1,4 +1,4 @@
-#ThermoGuard -- Safety-Critical Thermal Control System
+# ThermoGuard -- Safety-Critical Thermal Control System
 
 An autonomous cooling and safety monitoring system built around real-time temperature tracking, automated cooling activation, and fail-safe shutdown logic.
 
